@@ -30,8 +30,7 @@ readme = """# 아파트 커뮤니티 시설 공급 패턴 분석
 
 | 데이터 | 출처 | 규모 | 포함 여부 |
 |--------|------|------|-----------|
-| 세움터 건축HUB 복분양시설 | [건축HUB](https://www.hub.go.kr/portal/opn/tyb/idx-hspmslg-wlofc.do
-) | 5,441건 → 997단지 | ✅ data/output/ |
+| 세움터 건축HUB 복분양시설 | [건축HUB](https://www.hub.go.kr/portal/opn/tyb/idx-hspmslg-wlofc.do) | 5,441건 → 997단지 | ✅ data/output/ |
 | 행안부 주민등록 인구통계 | [주민등록통계](https://jumin.mois.go.kr) | 327개 동 | ✅ data/raw/ |
 | 행안부 세대원수별 세대수 | [주민등록통계](https://jumin.mois.go.kr) | 327개 동 | ✅ data/raw/ |
 | 소상공인 상권정보 | [공공데이터포털](https://www.data.go.kr) | 252,430개 업소 | ❌ 용량 초과 (아래 참고) |
