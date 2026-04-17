@@ -34,10 +34,10 @@
 
 | # | 데이터 | 출처 | 규모 | GitHub 포함 |
 |---|--------|------|------|------------|
-| 1 | 세움터 건축HUB | [주택인허가 복리분양시설](https://www.hub.go.kr/portal/opn/tyb/idx-hspmslg-wlofc.do) | 5,441건 → 964단지, 2022~2026년 | ✅ data/raw/ |
+| 1 | 주택인허가 복리분양시설 | [건축HUB](https://www.hub.go.kr/portal/opn/tyb/idx-hspmslg-wlofc.do) | 5,441건 → 964단지, 2022~2026년 | ✅ data/raw/ |
 | 2 | 행안부 주민등록 인구통계 | [주민등록통계](https://jumin.mois.go.kr) | 327개 동, 2023~2025년 | ✅ data/raw/ |
 | 3 | 행안부 세대원수별 세대수 | [주민등록통계](https://jumin.mois.go.kr) | 327개 동, 2024년 | ✅ data/raw/ |
-| 4 | 소상공인 상권정보 | [공공데이터포털](https://www.data.go.kr) → 소상공인 상권정보 | 252,430개 업소 | ❌ 용량 초과 |
+| 4 | 소상공인 상권정보 | [공공데이터포털](https://www.data.go.kr/data/15083033/fileData.do) → 소상공인 상권정보 | 252,430개 업소 | ❌ 용량 초과 |
 
 > **소상공인 상권정보 다운로드**  
 > data.go.kr → '소상공인 상권정보 서울' 검색 → 파일 다운로드  
