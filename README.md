@@ -46,27 +46,27 @@
 
 ---
 
-## 폴더 구조
-aptcommunity/
-├── data/
-│   ├── raw/                                    # 원본 수집 데이터
-│   │   ├── 복지분양시설_서울_통합.csv           # 세움터 API 수집본 (5,441건)
-│   │   ├── 서울_인구데이터_10년단위_3년치.csv   # 행안부 인구통계
-│   │   └── 서울_세대수_디테일전체.csv           # 행안부 세대원수
-│   └── output/                                 # 전처리 완료 데이터
-│       ├── 복지분양시설_단지단위.csv             # 시설 분류 완료 (964단지)
-│       ├── apt_final_v2.csv                    # 인구·세대 JOIN 완료
-│       └── apt_final_v3.csv                    # 상권 변수 추가 완료 (최종)
-├── notebooks/
-│   ├── APT_Community_Analysis.ipynb            # 전체 분석 노트북
-│   └── charts/                                 # EDA 시각화 차트
-│       ├── chart1_facility_rate.png
-│       ├── chart2_feature_dist.png
-│       ├── chart3_corr_heatmap.png
-│       ├── chart4_facility_comparison.png
-│       ├── chart5_gu_heatmap.png
-│       └── chart6_hypothesis_scatter.png
-└── README.md
+## 폴더 구조  
+aptcommunity/  
+├── data/  
+│   ├── raw/                                     # 원본 수집 데이터  
+│   │   ├── 복지분양시설_서울_통합.csv           # 세움터 API 수집본 (5,441건)  
+│   │   ├── 서울_인구데이터_10년단위_3년치.csv   # 행안부 인구통계  
+│   │   └── 서울_세대수_디테일전체.csv           # 행안부 세대원수  
+│   └── output/                                 # 전처리 완료 데이터  
+│       ├── 복지분양시설_단지단위.csv             # 시설 분류 완료 (964단지)  
+│       ├── apt_final_v2.csv                    # 인구·세대 JOIN 완료  
+│       └── apt_final_v3.csv                    # 상권 변수 추가 완료 (최종)  
+├── notebooks/  
+│   ├── APT_Community_Analysis.ipynb            # 전체 분석 노트북  
+│   └── charts/                                 # EDA 시각화 차트  
+│       ├── chart1_facility_rate.png  
+│       ├── chart2_feature_dist.png  
+│       ├── chart3_corr_heatmap.png  
+│       ├── chart4_facility_comparison.png  
+│       ├── chart5_gu_heatmap.png  
+│       └── chart6_hypothesis_scatter.png  
+└── README.md  
 
 ---
 
