@@ -157,6 +157,7 @@ def load_data():
 df = load_data()
 inject_css()
 
+CHART_DIR = Path("notebooks/charts")
 
 # =========================
 # 변수 설정
@@ -193,7 +194,7 @@ st.sidebar.divider()
 
 page = st.sidebar.radio(
     "페이지 이동",
-    ["홈", "데이터 미리보기", "시설 보유율"],
+    ["홈", "데이터 미리보기", "시설 보유율", "EDA 차트 모음"],
     index=0
 )
 
@@ -387,3 +388,84 @@ elif page == "시설 보유율":
 
     st.markdown('<div class="section-title">시설별 보유율 그래프</div>', unsafe_allow_html=True)
     st.bar_chart(rate)
+
+# =========================
+# EDA 차트 모음
+# =========================
+
+elif page == "EDA 차트 모음":
+    st.title("🖼️ EDA 시각화 6종")
+
+    st.markdown(
+        """
+        중간보고서에서 사용한 탐색적 데이터 분석(EDA) 시각화 자료를 확인하는 페이지입니다.  
+        시설별 보유율, 인구·세대 변수 분포, 상관관계, 시설 보유 여부별 비교, 구별 보급률,
+        핵심 가설 산점도를 한 곳에서 볼 수 있습니다.
+        """
+    )
+
+    chart_files = {
+        "그림 1. 시설별 보유율": {
+            "file": "chart1_facility_rate.png",
+            "desc": "서울시 신축 아파트 단지의 커뮤니티 시설 유형별 보유율을 비교합니다."
+        },
+        "그림 2. 인구·세대 변수 분포": {
+            "file": "chart2_feature_dist.png",
+            "desc": "아동비율, 고령비율, 1인가구비율 등 주요 인구·세대 변수의 분포를 확인합니다."
+        },
+        "그림 3. 피처 × 타겟 상관관계 히트맵": {
+            "file": "chart3_corr_heatmap.png",
+            "desc": "인구·세대 변수와 시설 보유 여부 사이의 상관관계를 확인합니다."
+        },
+        "그림 4. 시설 보유 여부별 인구 특성 비교": {
+            "file": "chart4_facility_comparison.png",
+            "desc": "시설 보유 단지와 미보유 단지의 인구·세대 특성 차이를 비교합니다."
+        },
+        "그림 5. 구별 시설 보급률 히트맵": {
+            "file": "chart5_gu_heatmap.png",
+            "desc": "서울 자치구별 커뮤니티 시설 보급률 차이를 확인합니다."
+        },
+        "그림 6. Q1·Q2·Q3 가설 검증 산점도": {
+            "file": "chart6_hypothesis_scatter.png",
+            "desc": "1인가구비율, 아동비율, 고령비율과 주요 시설 보유 여부의 관계를 확인합니다."
+        },
+    }
+
+    tab1, tab2 = st.tabs(["하나씩 보기", "전체 보기"])
+
+    with tab1:
+        selected_chart = st.selectbox(
+            "확인할 EDA 차트 선택",
+            list(chart_files.keys())
+        )
+
+        chart_info = chart_files[selected_chart]
+        chart_path = CHART_DIR / chart_info["file"]
+
+        st.markdown('<div class="section-title">' + selected_chart + '</div>', unsafe_allow_html=True)
+        st.caption(chart_info["desc"])
+
+        if chart_path.exists():
+            st.image(str(chart_path), use_container_width=True)
+        else:
+            st.error(f"차트 파일을 찾을 수 없습니다: {chart_path}")
+
+    with tab2:
+        st.markdown('<div class="section-title">EDA 차트 전체 보기</div>', unsafe_allow_html=True)
+
+        chart_items = list(chart_files.items())
+
+        for i in range(0, len(chart_items), 2):
+            cols = st.columns(2)
+
+            for col, (title, chart_info) in zip(cols, chart_items[i:i+2]):
+                chart_path = CHART_DIR / chart_info["file"]
+
+                with col:
+                    st.markdown(f"### {title}")
+                    st.caption(chart_info["desc"])
+
+                    if chart_path.exists():
+                        st.image(str(chart_path), use_container_width=True)
+                    else:
+                        st.error(f"파일 없음: {chart_path}")
