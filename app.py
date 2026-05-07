@@ -1,10 +1,7 @@
-
-import os
 from pathlib import Path
 
 import streamlit as st
 import pandas as pd
-import numpy as np
 
 
 # =========================
@@ -17,8 +14,153 @@ st.set_page_config(
     layout="wide"
 )
 
-DATA_PATH = Path("data/output/apt_final_v3_biz.csv")
-CHART_DIR = Path("notebooks/charts")
+
+# =========================
+# CSS 디자인
+# =========================
+
+def inject_css():
+    st.markdown(
+        """
+        <style>
+        .block-container {
+            padding-top: 2.2rem;
+            padding-bottom: 3rem;
+            max-width: 1180px;
+        }
+
+        .hero {
+            padding: 2.4rem 2.6rem;
+            border-radius: 26px;
+            background: linear-gradient(135deg, #0F172A 0%, #1D4ED8 58%, #38BDF8 100%);
+            color: white;
+            margin-bottom: 1.4rem;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.22);
+        }
+
+        .hero .eyebrow {
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #BFDBFE;
+            margin-bottom: 0.7rem;
+        }
+
+        .hero h1 {
+            color: white;
+            font-size: 2.45rem;
+            line-height: 1.25;
+            margin: 0 0 0.7rem 0;
+        }
+
+        .hero p {
+            color: #E0F2FE;
+            font-size: 1.05rem;
+            line-height: 1.65;
+            margin: 0;
+        }
+
+        .section-title {
+            font-size: 1.22rem;
+            font-weight: 800;
+            color: #0F172A;
+            margin-top: 1.7rem;
+            margin-bottom: 0.7rem;
+        }
+
+        .soft-card {
+            padding: 1.25rem 1.35rem;
+            border-radius: 20px;
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+            margin-bottom: 1rem;
+        }
+
+        .soft-card h3 {
+            color: #0F172A;
+            font-size: 1.08rem;
+            margin-top: 0;
+            margin-bottom: 0.45rem;
+        }
+
+        .soft-card p {
+            color: #475569;
+            font-size: 0.94rem;
+            line-height: 1.58;
+            margin-bottom: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.32rem 0.65rem;
+            border-radius: 999px;
+            background: #DBEAFE;
+            color: #1D4ED8;
+            font-size: 0.78rem;
+            font-weight: 800;
+            margin-bottom: 0.65rem;
+        }
+
+        .note-box {
+            padding: 1rem 1.15rem;
+            border-radius: 18px;
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            color: #1E3A8A;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        [data-testid="stMetric"] {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            padding: 1rem 1.15rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.055);
+        }
+
+        [data-testid="stMetricLabel"] {
+            color: #64748B;
+            font-weight: 700;
+        }
+
+        [data-testid="stMetricValue"] {
+            color: #0F172A;
+            font-weight: 800;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+# =========================
+# 데이터 로드
+# =========================
+
+@st.cache_data
+def load_data():
+    data_path = Path("data/output/apt_final_v3_biz.csv")
+
+    if not data_path.exists():
+        st.error(f"데이터 파일을 찾을 수 없습니다: {data_path}")
+        st.stop()
+
+    try:
+        return pd.read_csv(data_path, encoding="utf-8-sig")
+    except UnicodeDecodeError:
+        return pd.read_csv(data_path, encoding="cp949")
+
+
+df = load_data()
+inject_css()
+
+
+# =========================
+# 변수 설정
+# =========================
 
 TARGETS = [
     "운동시설",
@@ -29,100 +171,68 @@ TARGETS = [
     "라운지_휴게"
 ]
 
-FEATURES = [
-    "ratio_child",
-    "ratio_elderly",
-    "ratio_young",
-    "ratio_middle",
-    "ratio_1person",
-    "ratio_2person",
-    "ratio_3plus",
-    "카페수",
-    "헬스장수",
-    "학원수",
-    "독서실수"
-]
+available_targets = [col for col in TARGETS if col in df.columns]
 
-FEATURE_LABELS = {
-    "ratio_child": "아동비율",
-    "ratio_elderly": "고령비율",
-    "ratio_young": "청년비율",
-    "ratio_middle": "중년비율",
-    "ratio_1person": "1인가구비율",
-    "ratio_2person": "2인가구비율",
-    "ratio_3plus": "3인이상가구비율",
-    "카페수": "카페수",
-    "헬스장수": "헬스장수",
-    "학원수": "학원수",
-    "독서실수": "독서실수"
-}
-
-
-# =========================
-# 데이터 로드 함수
-# =========================
-
-@st.cache_data
-def load_data():
-    """
-    GitHub 저장소 안의 data/output/apt_final_v3_biz.csv를 불러온다.
-    인코딩 문제가 날 수 있어서 utf-8-sig → cp949 순서로 시도한다.
-    """
-    if not DATA_PATH.exists():
-        st.error(f"데이터 파일을 찾을 수 없습니다: {DATA_PATH}")
-        st.stop()
-
-    try:
-        return pd.read_csv(DATA_PATH, encoding="utf-8-sig")
-    except UnicodeDecodeError:
-        return pd.read_csv(DATA_PATH, encoding="cp949")
-
-
-df = load_data()
-
-available_targets = [c for c in TARGETS if c in df.columns]
-available_features = [c for c in FEATURES if c in df.columns]
+if available_targets:
+    facility_rate = df[available_targets].mean().sort_values(ascending=False) * 100
+    top_facility = facility_rate.index[0]
+    top_rate = facility_rate.iloc[0]
+else:
+    facility_rate = None
+    top_facility = "확인 필요"
+    top_rate = 0
 
 
 # =========================
 # 사이드바
 # =========================
 
-st.sidebar.title("메뉴")
+st.sidebar.markdown("## 🏢 APT Community")
+st.sidebar.markdown("서울시 신축 아파트 커뮤니티 시설 공급 패턴 분석")
+st.sidebar.divider()
 
 page = st.sidebar.radio(
-    "페이지 선택",
-    [
-        "1. 프로젝트 개요",
-        "2. 데이터 현황",
-        "3. 시설 보유율",
-        "4. 지역별 비교",
-        "5. 인구·세대 변수",
-        "6. 가설 예비검증",
-        "7. EDA 차트 모음",
-        "8. 모델·SHAP 예정"
-    ]
+    "페이지 이동",
+    ["홈", "데이터 미리보기", "시설 보유율"],
+    index=0
 )
 
+st.sidebar.divider()
+st.sidebar.caption("Data Mining Project")
+st.sidebar.caption("2024720536 양세미")
+
 
 # =========================
-# 1. 프로젝트 개요
+# 홈
 # =========================
 
-if page == "1. 프로젝트 개요":
-    st.title("🏢 아파트 커뮤니티 시설 공급 패턴 분석")
+if page == "홈":
+    st.markdown(
+        """
+        <div class="hero">
+            <div class="eyebrow">Data Mining Project</div>
+            <h1>서울시 신축 아파트<br>커뮤니티 시설 공급 패턴 분석</h1>
+            <p>
+                인구 구조·세대 구성·주변 상권 데이터를 활용하여  
+                아파트 커뮤니티 시설의 공급 패턴을 탐색하는 Streamlit 대시보드입니다.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     st.markdown(
         """
-        서울시 신축 아파트 단지를 대상으로 커뮤니티 시설 공급 패턴을 분석하고,  
-        인구 구조·세대 구성·주변 상권 데이터를 활용하여 시설 공급 여부를 설명하는 프로젝트입니다.
-        """
+        <div class="note-box">
+            <b>연구 전제</b><br>
+            시행사의 시설 공급 패턴을 수요의 간접 지표로 활용하되,
+            결과는 실제 수요 예측이 아니라 <b>공급 패턴 예측</b>으로 해석합니다.
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
-    st.info(
-        "연구 전제: 시행사의 시설 공급 패턴을 수요의 간접 지표로 활용하되, "
-        "결과는 실제 수요 예측이 아니라 '공급 패턴 예측'으로 해석합니다."
-    )
+    st.markdown('<div class="section-title">핵심 지표</div>', unsafe_allow_html=True)
 
     c1, c2, c3, c4 = st.columns(4)
 
@@ -134,63 +244,133 @@ if page == "1. 프로젝트 개요":
     else:
         c3.metric("자치구 수", "확인 필요")
 
-    if "동" in df.columns:
-        c4.metric("동 수", f"{df['동'].nunique()}개")
+    if available_targets:
+        c4.metric("최고 보유 시설", top_facility, f"{top_rate:.1f}%")
     else:
-        c4.metric("동 수", "확인 필요")
+        c4.metric("최고 보유 시설", "확인 필요")
 
-    st.subheader("연구 질문")
-    st.write(
-        "서울시 신축 아파트에서 읍면동별 인구 구조와 주변 상권 밀도는 "
-        "커뮤니티 시설 유형의 공급 여부를 예측하는 데 유의미한 변수인가?"
-    )
+    st.markdown('<div class="section-title">연구 질문</div>', unsafe_allow_html=True)
 
-    st.subheader("가설")
     st.markdown(
         """
-        - Q1: 1인가구 비율이 높을수록 공유오피스·회의시설 공급률이 높은가?
-        - Q2: 아동 비율이 높을수록 키즈시설 공급률이 높은가?
-        - Q3: 고령 비율이 높을수록 시니어시설 공급률이 높은가?
-        - Q4: 주변 카페·헬스장 밀도가 높을수록 단지 내 해당 시설이 감소하는가?
-        """
+        <div class="soft-card">
+            <h3>서울시 신축 아파트에서 인구 구조와 주변 상권은 커뮤니티 시설 공급과 관련이 있는가?</h3>
+            <p>
+                읍면동별 인구 구조, 세대 구성, 주변 상권 밀도가
+                키즈시설·시니어시설·공유오피스·운동시설 등 커뮤니티 시설 공급 여부를
+                설명할 수 있는지 탐색합니다.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
+    st.markdown('<div class="section-title">가설 구조</div>', unsafe_allow_html=True)
+
+    hypotheses = [
+        (
+            "Q1",
+            "1인가구비율 → 공유오피스",
+            "1인가구 비율이 높은 지역에서 공유오피스·회의시설 공급률이 높은지 확인합니다."
+        ),
+        (
+            "Q2",
+            "아동비율 → 키즈시설",
+            "아동 비율이 높은 지역에서 키즈시설 공급률이 높은지 확인합니다."
+        ),
+        (
+            "Q3",
+            "고령비율 → 시니어시설",
+            "고령 비율이 높은 지역에서 시니어시설 공급률이 높은지 확인합니다."
+        ),
+        (
+            "Q4",
+            "상권 밀도 → 단지 내 시설",
+            "주변 카페·헬스장 밀도가 높을수록 단지 내 유사 시설이 감소하는지 확인합니다."
+        )
+    ]
+
+    for i in range(0, len(hypotheses), 2):
+        cols = st.columns(2)
+        for col, item in zip(cols, hypotheses[i:i+2]):
+            q, title, desc = item
+            with col:
+                st.markdown(
+                    f"""
+                    <div class="soft-card">
+                        <div class="badge">{q}</div>
+                        <h3>{title}</h3>
+                        <p>{desc}</p>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+    st.markdown('<div class="section-title">현재 앱에서 확인 가능한 내용</div>', unsafe_allow_html=True)
+
+    a, b, c = st.columns(3)
+
+    with a:
+        st.markdown(
+            """
+            <div class="soft-card">
+                <h3>📁 데이터 현황</h3>
+                <p>최종 분석 데이터의 행·열 개수, 컬럼 목록, 데이터 샘플을 확인합니다.</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    with b:
+        st.markdown(
+            """
+            <div class="soft-card">
+                <h3>📊 시설 보유율</h3>
+                <p>시설 유형별 보유율과 보유 단지 수를 표와 그래프로 확인합니다.</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    with c:
+        st.markdown(
+            """
+            <div class="soft-card">
+                <h3>🔎 향후 확장</h3>
+                <p>최종 단계에서 Random Forest, SHAP, 지도 시각화를 추가할 수 있습니다.</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
 
 # =========================
-# 2. 데이터 현황
+# 데이터 미리보기
 # =========================
 
-elif page == "2. 데이터 현황":
-    st.title("📁 데이터 현황")
+elif page == "데이터 미리보기":
+    st.title("📁 데이터 미리보기")
 
-    st.subheader("최종 분석 데이터 미리보기")
-    st.dataframe(df.head(50), use_container_width=True)
+    c1, c2 = st.columns(2)
+    c1.metric("행 개수", f"{df.shape[0]:,}개")
+    c2.metric("열 개수", f"{df.shape[1]:,}개")
 
-    st.subheader("데이터 크기")
-    st.write(f"행 개수: {df.shape[0]:,}개")
-    st.write(f"열 개수: {df.shape[1]:,}개")
+    st.markdown('<div class="section-title">데이터 샘플</div>', unsafe_allow_html=True)
+    st.dataframe(df.head(30), use_container_width=True)
 
-    st.subheader("컬럼 목록")
-    st.write(df.columns.tolist())
-
-    csv_data = df.to_csv(index=False).encode("utf-8-sig")
-    st.download_button(
-        label="최종 데이터 CSV 다운로드",
-        data=csv_data,
-        file_name="apt_final_v3_biz.csv",
-        mime="text/csv"
-    )
+    with st.expander("컬럼 목록 보기"):
+        st.write(df.columns.tolist())
 
 
 # =========================
-# 3. 시설 보유율
+# 시설 보유율
 # =========================
 
-elif page == "3. 시설 보유율":
+elif page == "시설 보유율":
     st.title("📊 시설별 보유율")
 
     if not available_targets:
-        st.error("시설 타깃 컬럼을 찾을 수 없습니다.")
+        st.warning("시설 타깃 컬럼을 찾을 수 없습니다.")
         st.stop()
 
     rate = df[available_targets].mean().sort_values(ascending=False) * 100
@@ -202,201 +382,8 @@ elif page == "3. 시설 보유율":
         "보유 단지 수": count.astype(int).values
     })
 
-    st.subheader("시설별 보유율 표")
+    st.markdown('<div class="section-title">시설별 보유율 요약</div>', unsafe_allow_html=True)
     st.dataframe(summary, use_container_width=True)
 
-    st.subheader("시설별 보유율 그래프")
+    st.markdown('<div class="section-title">시설별 보유율 그래프</div>', unsafe_allow_html=True)
     st.bar_chart(rate)
-
-
-# =========================
-# 4. 지역별 비교
-# =========================
-
-elif page == "4. 지역별 비교":
-    st.title("🗺️ 구별 시설 보급률 비교")
-
-    if "구" not in df.columns:
-        st.error("'구' 컬럼이 없어 지역별 비교를 할 수 없습니다.")
-        st.stop()
-
-    if not available_targets:
-        st.error("시설 타깃 컬럼을 찾을 수 없습니다.")
-        st.stop()
-
-    target = st.selectbox("시설 선택", available_targets)
-
-    count_col = "건물명" if "건물명" in df.columns else df.columns[0]
-
-    gu_summary = (
-        df.groupby("구")
-          .agg(
-              단지수=(count_col, "count"),
-              보급률=(target, "mean")
-          )
-          .reset_index()
-    )
-
-    gu_summary["보급률(%)"] = (gu_summary["보급률"] * 100).round(1)
-    gu_summary = gu_summary.sort_values("보급률(%)", ascending=False)
-
-    st.subheader(f"자치구별 {target} 보급률")
-    st.dataframe(
-        gu_summary[["구", "단지수", "보급률(%)"]],
-        use_container_width=True
-    )
-
-    st.subheader("그래프")
-    chart_data = gu_summary.set_index("구")["보급률(%)"]
-    st.bar_chart(chart_data)
-
-    st.warning("단지 수가 적은 구는 보급률이 극단적으로 보일 수 있으므로 해석에 주의해야 합니다.")
-
-
-# =========================
-# 5. 인구·세대 변수
-# =========================
-
-elif page == "5. 인구·세대 변수":
-    st.title("👥 인구·세대 변수 분포")
-
-    if not available_features:
-        st.error("분석 가능한 인구·세대·상권 변수 컬럼을 찾을 수 없습니다.")
-        st.stop()
-
-    feature = st.selectbox(
-        "변수 선택",
-        available_features,
-        format_func=lambda x: FEATURE_LABELS.get(x, x)
-    )
-
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("평균", round(df[feature].mean(), 3))
-    c2.metric("중앙값", round(df[feature].median(), 3))
-    c3.metric("최솟값", round(df[feature].min(), 3))
-    c4.metric("최댓값", round(df[feature].max(), 3))
-
-    st.subheader(f"{FEATURE_LABELS.get(feature, feature)} 분포")
-    st.bar_chart(df[feature])
-
-    if "구" in df.columns:
-        st.subheader("자치구별 평균")
-        gu_feature = (
-            df.groupby("구")[feature]
-              .mean()
-              .sort_values(ascending=False)
-              .reset_index()
-        )
-        gu_feature.columns = ["구", "평균값"]
-        st.dataframe(gu_feature, use_container_width=True)
-
-
-# =========================
-# 6. 가설 예비검증
-# =========================
-
-elif page == "6. 가설 예비검증":
-    st.title("🔎 Q1~Q4 가설 예비검증")
-
-    hypothesis = st.selectbox(
-        "가설 선택",
-        [
-            "Q1: 1인가구비율 → 공유오피스_회의",
-            "Q2: 아동비율 → 키즈시설",
-            "Q3: 고령비율 → 시니어시설",
-            "Q4: 상권 변수 → 단지 내 시설"
-        ]
-    )
-
-    if hypothesis.startswith("Q1"):
-        x_col = "ratio_1person"
-        y_col = "공유오피스_회의"
-        explanation = "1인가구비율이 높은 지역에서 공유오피스·회의시설 공급률이 높은지 확인합니다."
-
-    elif hypothesis.startswith("Q2"):
-        x_col = "ratio_child"
-        y_col = "키즈시설"
-        explanation = "아동비율이 높은 지역에서 키즈시설 공급률이 높은지 확인합니다."
-
-    elif hypothesis.startswith("Q3"):
-        x_col = "ratio_elderly"
-        y_col = "시니어시설"
-        explanation = "고령비율이 높은 지역에서 시니어시설 공급률이 높은지 확인합니다."
-
-    else:
-        possible_biz = [c for c in ["카페수", "헬스장수", "학원수", "독서실수"] if c in df.columns]
-        if not possible_biz:
-            st.error("상권 변수 컬럼을 찾을 수 없습니다.")
-            st.stop()
-
-        x_col = st.selectbox("상권 변수 선택", possible_biz)
-        y_col = st.selectbox("시설 선택", available_targets)
-        explanation = "주변 상권 밀도가 단지 내 유사 시설 공급과 어떤 관계가 있는지 확인합니다."
-
-    st.info(explanation)
-
-    if x_col not in df.columns or y_col not in df.columns:
-        st.error(f"필요한 컬럼이 없습니다: {x_col}, {y_col}")
-        st.stop()
-
-    compare = (
-        df.groupby(y_col)[x_col]
-          .agg(["count", "mean", "median"])
-          .reset_index()
-    )
-
-    compare[y_col] = compare[y_col].map({0: "미보유", 1: "보유"}).fillna(compare[y_col])
-
-    st.subheader("시설 보유 여부별 변수 평균 비교")
-    st.dataframe(compare, use_container_width=True)
-
-    st.subheader("산점도")
-    st.scatter_chart(df[[x_col, y_col]])
-
-
-# =========================
-# 7. EDA 차트 모음
-# =========================
-
-elif page == "7. EDA 차트 모음":
-    st.title("🖼️ EDA 차트 모음")
-
-    chart_files = {
-        "시설별 보유율": CHART_DIR / "chart1_facility_rate.png",
-        "인구·세대 변수 분포": CHART_DIR / "chart2_feature_dist.png",
-        "상관관계 히트맵": CHART_DIR / "chart3_corr_heatmap.png",
-        "시설 보유 여부별 비교": CHART_DIR / "chart4_facility_comparison.png",
-        "구별 시설 보급률": CHART_DIR / "chart5_gu_heatmap.png",
-        "가설 검증 산점도": CHART_DIR / "chart6_hypothesis_scatter.png",
-    }
-
-    selected = st.selectbox("차트 선택", list(chart_files.keys()))
-    selected_path = chart_files[selected]
-
-    if selected_path.exists():
-        st.image(str(selected_path), use_container_width=True)
-    else:
-        st.error(f"차트 파일을 찾을 수 없습니다: {selected_path}")
-
-
-# =========================
-# 8. 모델·SHAP 예정
-# =========================
-
-elif page == "8. 모델·SHAP 예정":
-    st.title("🤖 모델·SHAP 분석 예정")
-
-    st.markdown(
-        """
-        최종 분석 단계에서 아래 내용을 추가할 예정입니다.
-
-        1. 시설 유형별 이진 분류 모델
-        2. Logistic Regression baseline
-        3. Random Forest main model
-        4. 5-Fold CV 기반 Macro F1 평가
-        5. SHAP 변수 중요도 분석
-        6. Q1~Q4 가설 다변량 재검증
-        """
-    )
-
-    st.info("현재 앱은 중간보고서 단계의 EDA와 가설 예비검증을 중심으로 구성되어 있습니다.")
