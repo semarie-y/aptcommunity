@@ -1,11 +1,3 @@
-프로젝트 개요
-데이터 현황
-시설별 보유율
-구별 시설 보급률
-인구·세대 변수 분포
-Q1~Q4 가설 예비검증
-EDA 차트 모음
-모델·SHAP 예정 페이지
 
 import os
 from pathlib import Path
