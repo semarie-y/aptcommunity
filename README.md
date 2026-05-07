@@ -140,6 +140,7 @@ aptcommunity/
 - [ ] SHAP 변수 기여도 분석 — Q1~Q4 가설 다변량 재검증
 - [ ] Folium 서울 25구 시설 보급률 Choropleth 지도
 - [ ] Streamlit 대시보드 배포
+- [ ] https://apt-community-analysis.streamlit.app/
 
 ---
 
