@@ -42,7 +42,7 @@
 > **소상공인 상권정보 다운로드**  
 > data.go.kr → '소상공인 상권정보 서울' 검색 → 파일 다운로드  
 > 중분류 코드 필터링 후 사용 (I212·R103·P105·P106·R102·S208)  
-> ✅Data 확인링크(https://drive.google.com/file/d/1Rx-DD8wdO4APgRgUe2SBmai3Hvp9wicJ/view?usp=drive_link)
+> ✅Data 확인링크(https://docs.google.com/spreadsheets/d/18P9f47ABXblgyTO6XSYzDf4ASPkYCXnXT7WscDA8TTo/edit?usp=drive_link)
 
 ---
 
