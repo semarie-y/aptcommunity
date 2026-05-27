@@ -1,0 +1,31 @@
+# macOS / system
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# Colab / local temporary outputs
+sample_data/
+*.log
+
+# Large raw source files
+02 소상공인시장진흥공단_상가(상권)정보_서울_202512.csv
+소상공인 상권정보_서울_필터.csv
+*상가(상권)정보*.csv
+*소상공인*상권*.csv
+
+# Model binaries, upload only if explicitly needed
+models_step9/
+models/
+*.pkl
+*.joblib
+
+# Temporary report bundles
+final_report_assets.zip
+rendered_report/
