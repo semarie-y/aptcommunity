@@ -213,29 +213,66 @@ def inject_css():
 
         /* ── 결론 카드 ── */
         .conclusion-card {
-            padding: 1.2rem 1.25rem;
-            border-radius: 18px;
+            padding: 1.4rem 1.5rem;
+            border-radius: 20px;
             background: #0E1B2E;
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-            margin-bottom: 1rem;
-            min-height: 170px;
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+            margin-bottom: 1.1rem;
+            min-height: 210px;
+            position: relative;
+            overflow: hidden;
         }
+        .conclusion-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+        }
+        .card-green::before  { background: linear-gradient(90deg, #22C55E, #86EFAC); }
+        .card-red::before    { background: linear-gradient(90deg, #EF4444, #FCA5A5); }
+        .card-yellow::before { background: linear-gradient(90deg, #F59E0B, #FDE68A); }
+
+        .conclusion-card .verdict-stamp {
+            display: inline-block;
+            font-size: 1.55rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+        .verdict-green  { color: #22C55E; }
+        .verdict-red    { color: #EF4444; }
+        .verdict-yellow { color: #F59E0B; }
+
+        .conclusion-card .q-label {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 0.2rem 0.55rem;
+            border-radius: 6px;
+            margin-right: 0.4rem;
+            vertical-align: middle;
+            letter-spacing: 0.03em;
+        }
+        .q-label-green  { background: rgba(34,197,94,0.15);  color: #86EFAC; }
+        .q-label-red    { background: rgba(239,68,68,0.15);  color: #FCA5A5; }
+        .q-label-yellow { background: rgba(245,158,11,0.15); color: #FDE68A; }
+
         .conclusion-card h3 {
-            font-size: 1.06rem;
-            margin-top: 0.2rem;
-            margin-bottom: 0.6rem;
+            font-size: 1.08rem;
+            margin: 0.35rem 0 0.55rem 0;
             color: #F8F4E3;
+            line-height: 1.4;
         }
-        .conclusion-card p {
+        .conclusion-card .detail-row {
+            font-size: 0.88rem;
             color: #94A3B8;
-            line-height: 1.55;
-            font-size: 0.92rem;
-            margin-bottom: 0.3rem;
+            line-height: 1.6;
+            margin-bottom: 0.25rem;
         }
-        .card-green  { border-left: 6px solid #22C55E; }
-        .card-red    { border-left: 6px solid #EF4444; }
-        .card-yellow { border-left: 6px solid #F59E0B; }
+        .card-green  { border-left: 5px solid #22C55E; }
+        .card-red    { border-left: 5px solid #EF4444; }
+        .card-yellow { border-left: 5px solid #F59E0B; }
 
         /* ── 모델 성능 카드 ── */
         .perf-card {
@@ -453,28 +490,44 @@ def make_gu_choropleth(gu_summary, geo_data, value_col, title, unit="%", color_s
 
 CONCLUSION_ROWS = [
     {
-        "q": "Q1", "question": "1인가구비율이 높을수록 공유오피스·회의시설 공급률이 높은가?",
+        "q": "Q1",
+        "question": "1인가구비율이 높을수록 공유오피스·회의시설 공급률이 높은가?",
         "hypothesis": "1인가구비율↑ → 공유오피스·회의시설↑",
-        "verdict": "기각", "emoji": "❌", "badge_class": "badge-red", "card_class": "card-red",
-        "reason": "단변량 상관 +0.004, 평균차 +0.11%p로 거의 무관. SHAP 순위도 12위에 불과해 핵심 변수로 보기 어렵다.",
+        "verdict": "기각", "verdict_en": "REJECTED",
+        "icon": "✕", "color": "red",
+        "card_class": "card-red", "verdict_class": "verdict-red", "q_class": "q-label-red",
+        "corr": "+0.004", "shap_rank": "SHAP 12위",
+        "reason": "단변량 상관 거의 0, SHAP 순위 하위권. 1인가구비율은 공유오피스 공급의 핵심 변수가 아님.",
     },
     {
-        "q": "Q2", "question": "아동비율이 높을수록 키즈시설 공급률이 높은가?",
+        "q": "Q2",
+        "question": "아동비율이 높을수록 키즈시설 공급률이 높은가?",
         "hypothesis": "아동비율↑ → 키즈시설↑",
-        "verdict": "지지", "emoji": "✅", "badge_class": "badge-green", "card_class": "card-green",
-        "reason": "단변량 상관 +0.144. SHAP에서도 키즈시설 예측 변수 1위로, 단변량·다변량 모두 일관된 신호.",
+        "verdict": "지지", "verdict_en": "SUPPORTED",
+        "icon": "✓", "color": "green",
+        "card_class": "card-green", "verdict_class": "verdict-green", "q_class": "q-label-green",
+        "corr": "+0.144", "shap_rank": "SHAP 1위",
+        "reason": "단변량·SHAP 모두 키즈시설 예측 변수 1위. 6개 시설 중 가장 일관된 신호.",
     },
     {
-        "q": "Q3", "question": "고령비율이 높을수록 시니어시설 공급률이 높은가?",
+        "q": "Q3",
+        "question": "고령비율이 높을수록 시니어시설 공급률이 높은가?",
         "hypothesis": "고령비율↑ → 시니어시설↑",
-        "verdict": "기각/재해석", "emoji": "⚠️", "badge_class": "badge-red", "card_class": "card-red",
-        "reason": "상관 -0.083, 보유 단지 고령비율이 오히려 낮음. 고령 인구 밀집 구도심과 신축 단지 공급지 간의 지리적 불일치로 해석.",
+        "verdict": "기각 / 재해석", "verdict_en": "REJECTED",
+        "icon": "✕", "color": "red",
+        "card_class": "card-red", "verdict_class": "verdict-red", "q_class": "q-label-red",
+        "corr": "−0.083", "shap_rank": "SHAP 9위 (미보유 방향)",
+        "reason": "보유 단지의 고령비율이 오히려 낮음. 고령 인구 밀집 구도심 vs 신축 공급지의 지리적 불일치.",
     },
     {
-        "q": "Q4", "question": "외부 카페·헬스장·학원·독서실이 많을수록 단지 내 유사 시설은 감소하는가?",
+        "q": "Q4",
+        "question": "외부 카페·헬스장·학원·독서실이 많을수록 단지 내 유사 시설은 감소하는가?",
         "hypothesis": "외부 상권↑ → 단지 내 유사 시설↓",
-        "verdict": "부분 지지", "emoji": "🟨", "badge_class": "badge-yellow", "card_class": "card-yellow",
-        "reason": "헬스장수↑→운동시설은 약한 대체(-0.012). 카페수↑→공유오피스는 오히려 보완/동반(+0.048). 시설별 방향 혼재.",
+        "verdict": "부분 지지", "verdict_en": "PARTIAL",
+        "icon": "~", "color": "yellow",
+        "card_class": "card-yellow", "verdict_class": "verdict-yellow", "q_class": "q-label-yellow",
+        "corr": "혼재", "shap_rank": "카페수 SHAP 1위",
+        "reason": "헬스장수↔운동시설: 약한 대체(-0.012). 카페수↔공유오피스: 보완/동반(+0.048). 시설 유형별 방향 상이.",
     },
 ]
 
@@ -487,10 +540,19 @@ def render_conclusion_cards():
                 st.markdown(
                     f"""
                     <div class="conclusion-card {row['card_class']}">
-                        <span class="badge {row['badge_class']}">{row['emoji']} {row['q']} | {row['verdict']}</span>
+                        <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:0.5rem;">
+                            <span class="q-label {row['q_class']}">{row['q']}</span>
+                            <span class="verdict-stamp {row['verdict_class']}">{row['verdict']}</span>
+                        </div>
                         <h3>{row['hypothesis']}</h3>
-                        <p><b style="color:#CBD5E1;">질문:</b> {row['question']}</p>
-                        <p><b style="color:#CBD5E1;">해석:</b> {row['reason']}</p>
+                        <div class="detail-row">
+                            <span style="color:#64748B;">상관계수:</span>
+                            <b style="color:#F8F4E3; margin-left:0.3rem;">{row['corr']}</b>
+                            &nbsp;&nbsp;
+                            <span style="color:#64748B;">모델:</span>
+                            <b style="color:#F8F4E3; margin-left:0.3rem;">{row['shap_rank']}</b>
+                        </div>
+                        <div class="detail-row" style="margin-top:0.4rem;">{row['reason']}</div>
                     </div>
                     """,
                     unsafe_allow_html=True,
@@ -511,9 +573,9 @@ page = st.sidebar.radio(
         "🏠 홈",
         "📁 데이터",
         "📊 시설 보유율",
-        "🗺️ 지도 시각화",
-        "🤖 모델 · SHAP",
-        "🖼️ 차트 모음",
+        "🗺 지도 시각화",
+        "📈 모델 · SHAP",
+        "🖼 차트 모음",
         "✅ 최종 결론",
     ],
     index=0,
@@ -562,7 +624,19 @@ if page == "🏠 홈":
     c4.metric("📊 모델 피처", "18개")
 
     # 결론 한눈에 보기
-    st.markdown('<div class="section-title">🔎 최종 가설 결론 한눈에 보기</div>', unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div style="margin-top:2rem; margin-bottom:0.6rem;">
+            <span style="font-size:0.75rem; font-weight:800; letter-spacing:0.12em;
+                         color:#F2C879; text-transform:uppercase;">Research Conclusions</span>
+            <div style="font-size:1.5rem; font-weight:900; color:#F8F4E3; margin-top:0.2rem;
+                        line-height:1.25;">
+                Q1 ~ Q4 &nbsp;<span style="color:#94A3B8; font-weight:400; font-size:1.1rem;">최종 가설 검증 결과</span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     render_conclusion_cards()
 
     # 주요 내용 카드
@@ -785,7 +859,7 @@ elif page == "🗺️ 지도 시각화":
 # ⑤ 모델 · SHAP
 # ============================================================
 
-elif page == "🤖 모델 · SHAP":
+elif page == "📈 모델 · SHAP":
     st.title("🤖 분류 모델 성능 · SHAP 변수 기여도")
 
     # ── 모델 설계 요약 ──────────────────────────────────────
@@ -881,7 +955,7 @@ elif page == "🤖 모델 · SHAP":
 # ⑥ 차트 모음
 # ============================================================
 
-elif page == "🖼️ 차트 모음":
+elif page == "🖼 차트 모음":
     st.title("🖼️ EDA · 모델 차트 모음")
 
     chart_files = {
@@ -967,11 +1041,17 @@ elif page == "🖼️ 차트 모음":
 elif page == "✅ 최종 결론":
     st.title("✅ Q1~Q4 최종 결론")
 
+
+elif page == "✅ 최종 결론":
+    st.title("✅ Q1~Q4 최종 결론")
+
     st.markdown(
         """
         <div class="note-box">
-        아래 카드는 단변량 상관계수·SHAP 변수 중요도·분위별 보유율을 종합한 최종 판정 결과입니다.
-        색상 — <b style="color:#86EFAC;">초록=지지</b> · <b style="color:#FCA5A5;">빨강=기각</b> · <b style="color:#FDE68A;">노랑=부분 지지</b>
+        아래 카드는 단변량 상관계수·SHAP 변수 중요도·분위별 보유율을 종합한 최종 판정 결과입니다.<br>
+        색상 — <b style="color:#86EFAC;">초록=지지</b> &nbsp;·&nbsp;
+                <b style="color:#FCA5A5;">빨강=기각</b> &nbsp;·&nbsp;
+                <b style="color:#FDE68A;">노랑=부분 지지</b>
         </div>
         """,
         unsafe_allow_html=True,
@@ -986,7 +1066,9 @@ elif page == "✅ 최종 결론":
             "가설": row["q"],
             "질문": row["question"],
             "가설 내용": row["hypothesis"],
-            "판정": f"{row['emoji']} {row['verdict']}",
+            "판정": row["verdict"],
+            "상관계수": row["corr"],
+            "SHAP": row["shap_rank"],
             "핵심 근거": row["reason"],
         }
         for row in CONCLUSION_ROWS
@@ -998,15 +1080,15 @@ elif page == "✅ 최종 결론":
     st.markdown(
         """
         <div class="soft-card">
-            <ul style="color:#CBD5E1; line-height:2; margin:0; padding-left:1.2rem;">
-                <li><b style="color:#FCA5A5;">Q1 기각</b>: 1인가구비율은 공유오피스·회의시설 공급의 핵심 변수로 보기 어렵다.
+            <ul style="color:#CBD5E1; line-height:2.1; margin:0; padding-left:1.2rem;">
+                <li><b style="color:#FCA5A5;">Q1 기각</b>: 1인가구비율은 공유오피스·회의시설 공급의 핵심 변수가 아니다.
                 (단변량 상관 +0.004, SHAP 12위)</li>
                 <li><b style="color:#86EFAC;">Q2 지지</b>: 아동비율은 키즈시설 공급을 설명하는 가장 일관된 변수로,
                 단변량·SHAP 모두 1위 수준의 신호를 보였다.</li>
-                <li><b style="color:#FCA5A5;">Q3 기각/재해석</b>: 고령비율이 높을수록 시니어시설이 많아진다는 가설은
-                지지되지 않았으며, 구도심 vs 신축 단지의 지리적 불일치로 해석된다.</li>
-                <li><b style="color:#FDE68A;">Q4 부분 지지</b>: 외부 상권의 대체효과는 시설 유형별로 혼재한다.
-                헬스장수↔운동시설은 약한 대체, 카페수↔공유오피스는 보완/동반 가능성이 함께 나타났다.</li>
+                <li><b style="color:#FCA5A5;">Q3 기각/재해석</b>: 고령비율과 시니어시설은 음의 상관(-0.083).
+                구도심 vs 신축 단지의 지리적 불일치로 해석된다.</li>
+                <li><b style="color:#FDE68A;">Q4 부분 지지</b>: 외부 상권의 대체효과는 시설 유형별로 혼재.
+                헬스장수→운동시설은 약한 대체, 카페수→공유오피스는 보완/동반 방향.</li>
             </ul>
         </div>
         """,
@@ -1019,10 +1101,10 @@ elif page == "✅ 최종 결론":
         """
         <div class="soft-card">
             <p style="color:#94A3B8; line-height:1.9; margin:0;">
-            • 시설 보유 여부는 공급 데이터이며 실제 이용 수요를 직접 측정하지 않습니다.<br>
-            • 인구·세대 비율 변수의 구조적 다중공선성으로 로지스틱 회귀 계수 해석이 제한됩니다.<br>
-            • 상권 변수는 법정동 단위 카운트이므로 단지-업소 간 실제 거리 기반 접근성을 반영하지 않습니다.<br>
-            • 향후: 반경 500m 공간 버퍼 상권 재집계, StratifiedGroupKFold 강건성 검증,
+            &#8226; 시설 보유 여부는 공급 데이터이며 실제 이용 수요를 직접 측정하지 않습니다.<br>
+            &#8226; 인구·세대 비율 변수의 구조적 다중공선성으로 로지스틱 회귀 계수 해석이 제한됩니다.<br>
+            &#8226; 상권 변수는 법정동 단위 카운트이므로 단지-업소 간 실제 거리 기반 접근성을 반영하지 않습니다.<br>
+            &#8226; 향후: 반경 500m 공간 버퍼 상권 재집계, StratifiedGroupKFold 강건성 검증,
             단지 세대수·브랜드·준공연도 변수 추가를 계획합니다.
             </p>
         </div>
