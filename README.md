@@ -95,12 +95,15 @@ aptcommunity/
 │       ├── chart6_hypothesis_scatter.png
 │       ├── chart8_shap_importance.png
 │       ├── chart9_q4_direction.png
-│       └── chart10_hypothesis_final_conclusion.png
+│ 
 ├── reports/
 │   └── 최종보고서_양세미_v4.docx
-└── results/
-    ├── tables/
-    └── model_results/
+├──  results/
+│   ├── tables/
+│   └── model_results/
+└── maps/
+    ├── seoul_gu_geo_enriched.json
+    └── seoul_gu_map_summary.csv
 ```
 
 ---
