@@ -1,17 +1,17 @@
 [theme]
 base = "dark"
-primaryColor = "#38BDF8"
-backgroundColor = "#020617"
-secondaryBackgroundColor = "#0F172A"
-textColor = "#F8FAFC"
+primaryColor = "#F2C879"
+backgroundColor = "#07111F"
+secondaryBackgroundColor = "#0E1B2E"
+textColor = "#F8F4E3"
 font = "sans-serif"
-baseRadius = "0.9rem"
+baseRadius = "0.85rem"
 showWidgetBorder = true
 showSidebarBorder = true
-chartCategoricalColors = ["#38BDF8", "#22C55E", "#F59E0B", "#EF4444", "#A78BFA", "#06B6D4"]
+chartCategoricalColors = ["#F2C879", "#38BDF8", "#22C55E", "#F97316", "#A78BFA", "#EF4444"]
 
 [theme.sidebar]
-backgroundColor = "#020617"
-secondaryBackgroundColor = "#111827"
-textColor = "#F8FAFC"
-primaryColor = "#38BDF8"
+backgroundColor = "#050B14"
+secondaryBackgroundColor = "#0E1B2E"
+textColor = "#F8F4E3"
+primaryColor = "#F2C879"
