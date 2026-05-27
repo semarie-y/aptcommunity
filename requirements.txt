@@ -1,6 +1,5 @@
 streamlit
 pandas
 numpy
-folium
-branca
-streamlit-folium
+matplotlib
+seaborn
