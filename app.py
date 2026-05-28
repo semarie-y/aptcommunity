@@ -362,7 +362,7 @@ def make_gu_choropleth(gu_summary, geo_data, value_col, title, unit="%", color_s
         lat, lon = _centroid(feature["geometry"])
         if lat is None:
             continue
-        short_name = gu_name.replace("구", "")
+        short_name = gu_name[:-1] if gu_name.endswith("구") else gu_name
         folium.Marker(
             location=[lat, lon],
             icon=folium.DivIcon(
