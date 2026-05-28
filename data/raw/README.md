@@ -13,6 +13,7 @@
 아래 원본 상권 파일은 용량이 크므로 GitHub에 올리지 않습니다.
 
 - `02 소상공인시장진흥공단_상가(상권)정보_서울_202512.csv`
+- https://drive.google.com/file/d/1BYewSYNaBMoZoEoKP55_FNG9O0LbKgCy/view?usp=drive_link
 
 해당 파일은 Colab 실행 시 직접 업로드해서 사용합니다.
 
