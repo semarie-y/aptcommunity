@@ -1041,10 +1041,6 @@ elif page == "🖼️ 차트 모음":
 elif page == "✅ 최종 결론":
     st.title("✅ Q1~Q4 최종 결론")
 
-
-elif page == "✅ 최종 결론":
-    st.title("✅ Q1~Q4 최종 결론")
-
     st.markdown(
         """
         <div class="note-box">
