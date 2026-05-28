@@ -1072,7 +1072,7 @@ elif page == "✅ 최종 결론":
     st.dataframe(conclusion_df, use_container_width=True, hide_index=True)
 
     # 핵심 문장
-    st.markdown('<div class="section-title">보고서용 핵심 문장</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">핵심 Insight</div>', unsafe_allow_html=True)
     st.markdown(
         """
         <div class="soft-card">
