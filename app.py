@@ -505,7 +505,7 @@ if page == "🏠 홈":
 
     st.markdown(
         '<div class="note-box">'
-        "<b>연구 전제</b><br>"
+        "<b>🔎연구 전제</b><br>"
         "본 연구는 실제 이용 수요가 아닌 <b>건축 인허가상 커뮤니티 시설 공급 여부</b>를 분석합니다. "
         "결과는 <b>공급 패턴 예측</b>으로 해석합니다."
         "</div>",
@@ -885,7 +885,7 @@ elif page == "✅ 최종 결론":
     ])
     st.dataframe(conclusion_df, use_container_width=True, hide_index=True)
 
-    st.markdown('<div class="section-title">핵심 Insight</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">💡핵심 Insight</div>', unsafe_allow_html=True)
     st.markdown(
         '<div class="soft-card">'
         '<ul style="color:#CBD5E1;line-height:2.1;margin:0;padding-left:1.2rem;">'
