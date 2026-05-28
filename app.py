@@ -658,7 +658,7 @@ if page == "🏠 홈":
         st.markdown(
             """
             <div class="soft-card">
-                <span class="badge badge-blue">🤖 모델 · SHAP</span>
+                <span class="badge badge-blue">📈 모델 · SHAP</span>
                 <h3>분류 모델 성능 · SHAP 변수 기여도</h3>
                 <p>LR/RF 모델의 보유 클래스 F1, Macro F1, Balanced Accuracy와 시설별 SHAP Top 3 변수를 정리합니다.</p>
             </div>
