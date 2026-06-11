@@ -198,10 +198,3 @@ Streamlit 앱은 `data/output/apt_final_1123.csv`가 있으면 최종 데이터 
 
 ---
 
-## 10. 다음 정리 작업
-
-- [ ] 최종 보고서 v4 업로드
-- [ ] `apt_final_1123.csv` 업로드
-- [ ] 새 EDA/SHAP 차트 업로드
-- [ ] 기존 `apt_final_v3_biz.csv`는 legacy 파일로 유지 또는 삭제
-- [ ] Streamlit 앱에서 최종 데이터 기준 화면 확인
