@@ -1,0 +1,47 @@
+name: Keep Streamlit Awake
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  keep-awake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Selenium
+        run: |
+          pip install selenium
+
+      - name: Visit Streamlit app
+        run: |
+          python << 'PY'
+          import time
+          from selenium import webdriver
+          from selenium.webdriver.chrome.options import Options
+
+          url = "https://apt-community-analysis.streamlit.app/"
+
+          options = Options()
+          options.add_argument("--headless=new")
+          options.add_argument("--no-sandbox")
+          options.add_argument("--disable-dev-shm-usage")
+          options.add_argument("--window-size=1920,1080")
+
+          driver = webdriver.Chrome(options=options)
+
+          try:
+              driver.get(url)
+              time.sleep(40)
+              print("Visited:", url)
+              print("Page title:", driver.title)
+          finally:
+              driver.quit()
+          PY
